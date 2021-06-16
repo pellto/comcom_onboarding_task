@@ -16,6 +16,8 @@ var firebaseConfig = {
     measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
+export const dockerURL = process.env.FIREBASE_DEFAULT_DOCKER_URL
+
 try {
     firebase.app();
 } catch {

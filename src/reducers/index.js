@@ -251,7 +251,6 @@ const rootReducer = (state = initialState, action) => {
                 taskID: action.data,
             };
         case SET_CSV_PATH:
-            console.log("SEC CSV PATH", action.data);
             return {
                 ...state,
                 csvPath: action.data,

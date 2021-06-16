@@ -24,10 +24,7 @@ const LoginLayout = () => {
             .signOut()
             .then(
                 function () {
-                    console.log("LOGOUT!!!");
                     dispatch(logoutAction());
-                    // dispatch(changeIsValidForm());
-                    //setUserInfo(null);
                 },
                 function (error) {
                     throw error;
@@ -63,9 +60,7 @@ const LoginLayout = () => {
             if (user) {
                 // console.log("IS LOGGED IN");
                 // console.log(user);
-                dispatch(loginAction(getUserInfo(user)))
-            } else {
-                console.log("NOT LOGGED IN");
+                dispatch(loginAction(getUserInfo(user)));
             }
         });
     }, [isLoggedIn]);

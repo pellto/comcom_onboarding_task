@@ -1,11 +1,10 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import firebase from "../firebaseConfig";
-import { updateTaskID, setSelectedFile, setLogInfo } from "../reducers";
+import { updateTaskID, setSelectedFile } from "../reducers";
 
 const TrainButton = () => {
     const modelInfo = useSelector((state) => state.modelParams);
-    const [csvPath, setCsvPath] = useState(null);
     const [clickedButton, setClickedButton] = useState(null);
     const stateTaskID = useSelector((state) => state.taskID);
     const uid = useSelector((state) => state.userInfo.uid);
@@ -15,7 +14,7 @@ const TrainButton = () => {
     const writeToDB = () => {
         if (!stateTaskID && currentFile) {
             return new Promise((resolve, reject) => {
-                console.log("RUN UPLOAD DATA");
+                // console.log("RUN UPLOAD DATA");
                 const db = firebase.database();
                 const ref = db.ref("tasks/");
                 const timeStamp = `${Date.now()}`;
@@ -30,11 +29,8 @@ const TrainButton = () => {
                     remainTime: 0,
                     csvPath: csvSavePath,
                 };
-                console.log("SETTED");
                 ref.child(taskID).set(out);
-                console.log("TASK ID >> ", taskID);
                 dispatch(updateTaskID(taskID));
-                setCsvPath(csvSavePath);
                 resolve({ csvSavePath: csvSavePath, taskID: taskID });
             });
         }
@@ -47,7 +43,6 @@ const TrainButton = () => {
 
     const uploadToStorage = (resolvedData) => {
         if (resolvedData && currentFile) {
-            console.log("UPLOAD >> ", resolvedData);
             const storageRef = firebase.storage().ref();
             const uploadTask = storageRef
                 .child(resolvedData.csvSavePath)
@@ -57,13 +52,13 @@ const TrainButton = () => {
                 async (snapshot) => {
                     const progress =
                         (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                    console.log("Upload is " + progress + "% Done");
+                    // console.log("Upload is " + progress + "% Done");
                     switch (snapshot.state) {
                         case firebase.storage.TaskState.PAUSED:
-                            console.log("UPLOAD IS PAUSED");
+                            // console.log("UPLOAD IS PAUSED");
                             break;
                         case firebase.storage.TaskState.RUNNING:
-                            console.log("UPLOAD IS RUNNING");
+                            // console.log("UPLOAD IS RUNNING");
                             break;
                     }
                 },
@@ -71,12 +66,6 @@ const TrainButton = () => {
                     console.log(error);
                 },
                 () => {
-                    uploadTask.snapshot.ref.getDownloadURL().then((e) => {
-                        console.log(e);
-                        // dispatch(changeIsUpload());
-                        // setFileUploadProgress(-1);
-                    });
-                    console.log("TASK ID >> ", resolvedData.taskID);
                     updateStatusToDB({
                         status: "uploadedData",
                         taskID: resolvedData.taskID,
@@ -84,7 +73,7 @@ const TrainButton = () => {
                 }
             );
         } else {
-            console.log("YOU MUST UPLOAD!!");
+            alert("YOU MUST UPLOAD!!");
         }
     };
 

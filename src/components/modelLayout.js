@@ -18,11 +18,9 @@ const ModelLayout = () => {
     const modelParams = useSelector((state) => state.modelParams);
     const isLoggedIn = useSelector((state) => state.isLoggedIn);
     const selectedFile = useSelector((state) => state.selectedFile);
-    const csvPath = useSelector((state) => state.csvPath);
     const taskID = useSelector((state) => state.taskID);
     const remainTime = useSelector((state) => state.remainTime);
     const spendingTime = useSelector((state) => state.spendingTime);
-    // const readyToUpload = useSelector((state) => state.readyToUpload);
     const db = firebase.database();
     const [serviceModels, setServiceModels] = useState(null);
     const [readyToUpload, setReadyToUpload] = useState(null);
@@ -42,19 +40,8 @@ const ModelLayout = () => {
         onLoadModelInfo();
     }
 
-    const debugBTN = () => {
-        console.log(modelParams);
-        console.log("RTU >> ", readyToUpload);
-        console.log("FILES >> ", selectedFile);
-        console.log("CSV FILE NAME >> ", csvPath ? csvPath : "NONO");
-        console.log("TASK ID >>", taskID);
-        console.log("REMAIN >> ", remainTime, "SPENDING >> ", spendingTime);
-        console.log(firebase.auth().currentUser);
-        console.log("LOGGED IN ?? >> ", isLoggedIn);
-    };
-
     const onSelectFile = (file) => {
-        console.log("FILE >>", file);
+        // console.log("FILE >>", file);
         dispatch(setSelectedFile(file));
     };
 
@@ -69,16 +56,6 @@ const ModelLayout = () => {
         );
     }, [isLoggedIn, modelParams, selectedFile]);
 
-    // useEffect(() => {
-    //     if (isLoggedIn) {
-    //         const dbChild = db.ref().child("tasks/" + (taskID !== null ? taskID : ""))
-
-    //         dbChild.on('value', (snap) => {
-    //             const status =
-    //         })
-    //     }
-    // })
-
     useEffect(() => {
         if (isLoggedIn) {
             const dbChild = db
@@ -86,11 +63,7 @@ const ModelLayout = () => {
                 .child("tasks/" + (taskID !== null ? taskID : ""));
 
             dbChild.on("value", (snap) => {
-                // console.log(snap);
-                // console.log("log/" + (userInfo !== null ? userInfo.uid : ""));
                 const log = snap.val();
-                // console.log("LOG >>", log);
-                // console.log("SNAP VALUE >> ", );
                 if (log !== null && log.status === "training") {
                     dispatch(
                         setLogInfo({
@@ -99,20 +72,6 @@ const ModelLayout = () => {
                         })
                     );
                     const value = log.status;
-                    // console.log(
-                    //     "LOGGED RUNNING STATE>>",
-                    //     log.status,
-                    //     log.spendingTime,
-                    //     log.remainTime,
-                    //     spendingTime,
-                    //     remainTime,
-                    // );
-                    // console.log("VALUE >>", value);
-                    // // const task_id = log.
-                    // const task_id = Object.keys(log);
-                    // console.log("TASK >>", task_id);
-                    // setSpendingTimeState(value["spendingTime"]);
-                    // setRemainTimeState(value["remainTime"]);
                 }
                 if (log !== null && log.status === "settedDownload") {
                     console.log(
@@ -137,7 +96,7 @@ const ModelLayout = () => {
                     onChange={(e) => onSelectFile(e.target.files[0])}
                 />
             )}
-            <button onClick={debugBTN}>DEBUG BUTTON</button>
+            {/* <button onClick={debugBTN}>DEBUG BUTTON</button> */}
             {isLoggedIn && (
                 <div>
                     <div>MODEL NAME</div>
@@ -195,7 +154,8 @@ const ModelLayout = () => {
             {spendingTime > 0 && remainTime > 0 && (
                 <div>
                     <div>
-                        SPENDING >>   {spendingTime} sec | REMAINING >>   {remainTime} sec
+                        SPENDING >> {spendingTime} sec | REMAINING >>{" "}
+                        {remainTime} sec
                     </div>
                 </div>
             )}
